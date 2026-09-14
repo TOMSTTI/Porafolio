@@ -215,7 +215,7 @@ a {
 .hero-top {
     display: flex;
     align-items: center;
-    gap: 28px;
+    gap: 36px;
 }
 
 @media (max-width:560px) {
@@ -229,18 +229,29 @@ a {
 .avatar-box {
     position: relative;
     flex: none;
-    width: 112px;
-    height: 112px;
+    width: 160px;
+    height: 160px;
     border-radius: 50%;
     background: var(--surface);
-    border: 1px solid var(--border);
-    box-shadow: 0 0 0 4px rgba(62, 123, 250, 0.12);
+    border: 2px solid var(--border);
+    box-shadow: 0 0 0 6px rgba(62, 123, 250, 0.16), 0 12px 32px rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     color: var(--text-soft);
-    font-size: 0.8rem;
+    font-size: 0.9rem;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+body.mode-view .avatar-box.has-img {
+    cursor: pointer;
+}
+
+body.mode-view .avatar-box.has-img:hover {
+    transform: scale(1.04);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 8px rgba(62, 123, 250, 0.25), 0 16px 40px rgba(62, 123, 250, 0.2);
 }
 
 .avatar-box img {
@@ -260,24 +271,26 @@ a {
 
 .avatar-upload-btn {
     position: absolute;
-    bottom: -2px;
-    right: -2px;
-    width: 32px;
-    height: 32px;
+    bottom: 4px;
+    right: 4px;
+    width: 36px;
+    height: 36px;
     padding: 0;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--accent);
-    border-color: var(--accent);
+    border: 2px solid var(--surface);
     color: #fff;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    z-index: 3;
 }
 
 .avatar-upload-btn:hover {
     background: var(--accent-dark);
-    border-color: var(--accent-dark);
+    transform: scale(1.1);
 }
 
 .hero-text {
@@ -319,22 +332,95 @@ a {
     border-radius: 2px;
 }
 
+/* ---------- SOCIAL / CONTACT LINKS ---------- */
 .contact-line {
-    margin-top: 18px;
+    margin-top: 24px;
     display: flex;
-    gap: 18px;
+    gap: 12px;
     flex-wrap: wrap;
-    font-size: 0.9rem;
-    color: var(--text-soft);
+    align-items: center;
 }
 
-.contact-line input {
+.social-item-edit {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    flex: 1 1 200px;
+    min-width: 180px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.social-item-edit:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(62, 123, 250, 0.2);
+}
+
+.social-item-edit svg {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    color: var(--accent-soft);
+}
+
+.social-item-edit input {
     border: none;
     background: transparent;
     font-family: 'Work Sans', sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
+    color: var(--text);
+    width: 100%;
+    padding: 0;
+}
+
+.social-item-edit input:focus {
+    outline: none;
+}
+
+.social-badges-view {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.social-badge-view {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 0.88rem;
+    font-weight: 500;
     color: var(--text-soft);
-    min-width: 160px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.social-badge-view svg {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    color: var(--accent-soft);
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.social-badge-view:hover {
+    background: var(--surface-2);
+    border-color: var(--accent);
+    color: var(--text);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(62, 123, 250, 0.18);
+}
+
+.social-badge-view:hover svg {
+    color: var(--accent);
+    transform: scale(1.1);
 }
 
 /* ---------- shared field styling ---------- */

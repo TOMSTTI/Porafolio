@@ -70,9 +70,33 @@
         </div>
       </div>
       <div class="hero-rule"></div>
-      <div class="contact-line">
-        <input class="field" id="profile-email" type="text" placeholder="tu@email.com">
-        <input class="field" id="profile-site" type="text" placeholder="linkedin / github / sitio">
+      <div class="contact-line" id="contact-line">
+        <div class="social-item-edit edit-only">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          <input id="profile-email" type="text" placeholder="Correo electrónico">
+        </div>
+
+        <div class="social-item-edit edit-only">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.25V10.9H6.46M7.86 6.72a1.47 1.47 0 1 0 1.47 1.47c0-.81-.66-1.47-1.47-1.47Z"/></svg>
+          <input id="profile-linkedin" type="text" placeholder="LinkedIn (usuario o URL)">
+        </div>
+
+        <div class="social-item-edit edit-only">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2Z"/></svg>
+          <input id="profile-github" type="text" placeholder="GitHub (usuario o URL)">
+        </div>
+
+        <div class="social-item-edit edit-only">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.8 3.8 0 0 0 3.8 7.6v8.8A3.8 3.8 0 0 0 7.6 20.2h8.8a3.8 3.8 0 0 0 3.8-3.8V7.6A3.8 3.8 0 0 0 16.4 3.8H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 7.8 1.25 1.25 0 0 1 16 6.55a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3Z"/></svg>
+          <input id="profile-instagram" type="text" placeholder="Instagram (usuario o URL)">
+        </div>
+
+        <div class="social-item-edit edit-only">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm6.93 6h-2.95a15.65 15.65 0 0 0-1.38-3.56A8.03 8.03 0 0 1 18.93 8zM12 4.04c.83 1.2 1.48 2.59 1.91 3.96h-3.82c.43-1.37 1.08-2.76 1.91-3.96zM4.26 14a7.82 7.82 0 0 1 0-4h3.38a16.5 16.5 0 0 0-.14 2c0 .68.05 1.35.14 2H4.26zm.81 2h2.95a15.65 15.65 0 0 0 1.38 3.56A8.03 8.03 0 0 1 5.07 16zm2.95-8H5.07a8.03 8.03 0 0 1 4.33-3.56A15.65 15.65 0 0 0 8.02 8zM12 19.96c-.83-1.2-1.48-2.59-1.91-3.96h3.82c-.43 1.37-1.08 2.76-1.91 3.96zM14.34 14H9.66a14.7 14.7 0 0 1-.16-2c0-.68.05-1.35.16-2h4.68c.11.65.16 1.32.16 2 0 .68-.05 1.35-.16 2zm.25 5.56c.56-1.07 1.03-2.26 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56zM16.36 14c.09-.65.14-1.32.14-2 0-.68-.05-1.35-.14-2h3.38a7.82 7.82 0 0 1 0 4h-3.38z"/></svg>
+          <input id="profile-site" type="text" placeholder="Sitio Web o Portafolio">
+        </div>
+
+        <div class="social-badges-view view-only" id="social-badges-view"></div>
       </div>
     </section>
 
@@ -123,6 +147,9 @@
             name: '',
             tagline: '',
             email: '',
+            linkedin: '',
+            github: '',
+            instagram: '',
             site: '',
             photo: '',
             bio: '',
@@ -478,12 +505,78 @@
         }
       });
 
+      // ---------- social links ----------
+      function formatSocialUrl(type, val) {
+        if (!val) return '';
+        val = val.trim();
+        if (!val) return '';
+        if (type === 'email') {
+          return val.startsWith('mailto:') ? val : 'mailto:' + val;
+        }
+        if (val.startsWith('http://') || val.startsWith('https://')) return val;
+        if (type === 'linkedin') return 'https://linkedin.com/in/' + val.replace(/^@/, '');
+        if (type === 'github') return 'https://github.com/' + val.replace(/^@/, '');
+        if (type === 'instagram') return 'https://instagram.com/' + val.replace(/^@/, '');
+        return 'https://' + val;
+      }
+
+      function renderSocialBadges() {
+        const container = document.getElementById('social-badges-view');
+        if (!container) return;
+
+        const links = [
+          {
+            key: 'email',
+            label: state.profile.email,
+            url: formatSocialUrl('email', state.profile.email),
+            svg: '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>'
+          },
+          {
+            key: 'linkedin',
+            label: 'LinkedIn',
+            url: formatSocialUrl('linkedin', state.profile.linkedin),
+            svg: '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.25V10.9H6.46M7.86 6.72a1.47 1.47 0 1 0 1.47 1.47c0-.81-.66-1.47-1.47-1.47Z"/></svg>'
+          },
+          {
+            key: 'github',
+            label: 'GitHub',
+            url: formatSocialUrl('github', state.profile.github),
+            svg: '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2Z"/></svg>'
+          },
+          {
+            key: 'instagram',
+            label: 'Instagram',
+            url: formatSocialUrl('instagram', state.profile.instagram),
+            svg: '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.8 3.8 0 0 0 3.8 7.6v8.8A3.8 3.8 0 0 0 7.6 20.2h8.8a3.8 3.8 0 0 0 3.8-3.8V7.6A3.8 3.8 0 0 0 16.4 3.8H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 7.8 1.25 1.25 0 0 1 16 6.55a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3Z"/></svg>'
+          },
+          {
+            key: 'site',
+            label: 'Sitio Web',
+            url: formatSocialUrl('site', state.profile.site),
+            svg: '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm6.93 6h-2.95a15.65 15.65 0 0 0-1.38-3.56A8.03 8.03 0 0 1 18.93 8zM12 4.04c.83 1.2 1.48 2.59 1.91 3.96h-3.82c.43-1.37 1.08-2.76 1.91-3.96zM4.26 14a7.82 7.82 0 0 1 0-4h3.38a16.5 16.5 0 0 0-.14 2c0 .68.05 1.35.14 2H4.26zm.81 2h2.95a15.65 15.65 0 0 0 1.38 3.56A8.03 8.03 0 0 1 5.07 16zm2.95-8H5.07a8.03 8.03 0 0 1 4.33-3.56A15.65 15.65 0 0 0 8.02 8zM12 19.96c-.83-1.2-1.48-2.59-1.91-3.96h3.82c-.43 1.37-1.08 2.76-1.91 3.96zM14.34 14H9.66a14.7 14.7 0 0 1-.16-2c0-.68.05-1.35.16-2h4.68c.11.65.16 1.32.16 2 0 .68-.05 1.35-.16 2zm.25 5.56c.56-1.07 1.03-2.26 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56zM16.36 14c.09-.65.14-1.32.14-2 0-.68-.05-1.35-.14-2h3.38a7.82 7.82 0 0 1 0 4h-3.38z"/></svg>'
+          }
+        ];
+
+        const activeLinks = links.filter(function (l) { return !!l.url; });
+
+        container.innerHTML = activeLinks.map(function (l) {
+          return '<a class="social-badge-view" href="' + esc(l.url) + '" target="_blank" rel="noopener noreferrer">' +
+            l.svg +
+            '<span>' + esc(l.label) + '</span>' +
+            '</a>';
+        }).join('');
+      }
+
       // ---------- profile fields ----------
-      function bindProfileField(id, field, isTagline) {
+      function bindProfileField(id, field) {
         const el = document.getElementById(id);
+        if (!el) return;
         el.addEventListener('input', function () {
           state.profile[field] = el.value;
           if (field === 'name') { updateLogoInitial(); }
+          if (['email', 'linkedin', 'github', 'instagram', 'site'].indexOf(field) !== -1) {
+            renderSocialBadges();
+          }
           scheduleSave();
         });
       }
@@ -579,12 +672,16 @@
 
       // ---------- build ----------
       function buildUI() {
-        document.getElementById('profile-name').value = state.profile.name;
-        document.getElementById('profile-tagline').value = state.profile.tagline;
-        document.getElementById('profile-email').value = state.profile.email;
-        document.getElementById('profile-site').value = state.profile.site;
-        document.getElementById('profile-bio').value = state.profile.bio;
+        document.getElementById('profile-name').value = state.profile.name || '';
+        document.getElementById('profile-tagline').value = state.profile.tagline || '';
+        document.getElementById('profile-email').value = state.profile.email || '';
+        document.getElementById('profile-linkedin').value = state.profile.linkedin || '';
+        document.getElementById('profile-github').value = state.profile.github || '';
+        document.getElementById('profile-instagram').value = state.profile.instagram || '';
+        document.getElementById('profile-site').value = state.profile.site || '';
+        document.getElementById('profile-bio').value = state.profile.bio || '';
         updateLogoInitial();
+        renderSocialBadges();
 
         const photoBox = document.getElementById('photo-box');
         if (state.profile.photo) {
@@ -599,7 +696,7 @@
         updateAllTextareas();
       }
 
-      ['profile-name', 'profile-tagline', 'profile-email', 'profile-site', 'profile-bio'].forEach(function (id) {
+      ['profile-name', 'profile-tagline', 'profile-email', 'profile-linkedin', 'profile-github', 'profile-instagram', 'profile-site', 'profile-bio'].forEach(function (id) {
         const field = id.replace('profile-', '');
         bindProfileField(id, field);
       });
