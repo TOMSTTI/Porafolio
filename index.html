@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portafolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Work+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="mode-view">
+
+  <div class="edit-banner">Estás en modo edición — los cambios se guardan automáticamente en este dispositivo. Las
+    imágenes se comprimen al subirlas.</div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <button class="logo-mark" id="logo-mark" type="button" aria-label="Acceder">
+        <span id="logo-initial">P</span>
+      </button>
+      <div class="nav-links view-only">
+        <a href="#sobre-mi">Sobre mí</a>
+        <a href="#proyectos">Proyectos</a>
+      </div>
+      <div class="mode-toggle">
+        <span class="save-status" id="save-status"></span>
+        <button class="btn ghost edit-only" id="reset-btn" type="button">Restablecer</button>
+        <button class="btn ghost edit-only" id="logout-btn" type="button">Cerrar sesión</button>
+        <button class="btn primary edit-only" id="preview-btn" type="button">Vista previa</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="login-overlay" id="login-overlay">
+    <form class="login-card" id="login-form">
+      <h3 class="login-title">Iniciar sesión</h3>
+      <p class="login-hint">Ingresá tus datos para editar el contenido.</p>
+      <label class="login-label" for="login-user">Usuario</label>
+      <input class="login-input" id="login-user" type="text" autocomplete="username" required>
+      <label class="login-label" for="login-pass">Contraseña</label>
+      <input class="login-input" id="login-pass" type="password" autocomplete="current-password" required>
+      <p class="login-error" id="login-error"></p>
+      <div class="login-actions">
+        <button class="btn ghost" type="button" id="login-cancel">Cancelar</button>
+        <button class="btn primary" type="submit">Entrar</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="wrap">
+    <section class="hero" id="inicio">
+      <div class="hero-top">
+        <div class="avatar-box" id="photo-box">
+          <span class="placeholder">Foto</span>
+          <img id="profile-photo-img" alt="Foto de perfil">
+          <button class="btn avatar-upload-btn edit-only" id="photo-upload-btn" type="button"
+            title="Subir o cambiar foto">✎</button>
+          <input class="file-input" id="photo-file-input" type="file" accept="image/*">
+        </div>
+        <div class="hero-text">
+          <input class="hero-name field" id="profile-name" type="text" value="" placeholder="Tu nombre">
+          <textarea class="hero-tagline field" id="profile-tagline" rows="2"
+            placeholder="Una frase corta sobre quién sos y qué estudiás o hacés"></textarea>
+        </div>
+      </div>
+      <div class="hero-rule"></div>
+      <div class="contact-line">
+        <input class="field" id="profile-email" type="text" placeholder="tu@email.com">
+        <input class="field" id="profile-site" type="text" placeholder="linkedin / github / sitio">
+      </div>
+    </section>
+
+    <section id="sobre-mi" class="reveal">
+      <h2 class="section-title">Sobre mí</h2>
+      <div class="about-body">
+        <textarea class="bio field" id="profile-bio" rows="4"
+          placeholder="Contá brevemente quién sos, qué te interesa y qué estás buscando."></textarea>
+
+        <div class="studies">
+          <div class="studies-title">Estudios</div>
+          <p class="studies-hint edit-only">Tocá el ✎ de cada estudio para subir una imagen del certificado o título.
+          </p>
+          <div id="studies-list"></div>
+          <button class="btn ghost edit-only add-study-btn" id="add-study-btn" type="button">+ Agregar estudio</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="proyectos" class="reveal">
+      <h2 class="section-title">Proyectos</h2>
+      <div class="projects-grid" id="projects-grid"></div>
+    </section>
+  </div>
+
+  <footer>Portafolio personal</footer>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'portfolio:data';
+
+      function genId() { return 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8); }
+      function esc(str) {
+        return (str || '').replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      function defaultState() {
+        return {
+          profile: {
+            name: '',
+            tagline: '',
+            email: '',
+            site: '',
+            photo: '',
+            bio: '',
+            studies: [
+              { id: genId(), periodo: '2023 — presente', inst: 'Nombre de tu institución', titulo: 'Carrera o programa que estás cursando', image: '' }
+            ]
+          },
+          projects: [
+            { id: genId(), title: 'Nombre del proyecto', desc: 'Una descripción corta de qué hiciste y con qué herramientas.', link: '', image: '' }
+          ]
+        };
+      }
+
+      let state = null;
+
+      // ---------- auth ----------
+      const CREDENTIALS = { user: 'tomas', pass: 'proyecto' };
+      let isAuthenticated = false;
+
+      // ---------- persistence ----------
+      let saveTimer = null;
+      function setStatus(text) {
+        document.getElementById('save-status').textContent = text;
+      }
+      function scheduleSave() {
+        setStatus('Guardando…');
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(saveState, 500);
+      }
+      async function saveState() {
+        try {
+          const res = await window.storage.set(STORAGE_KEY, JSON.stringify(state), false);
+          setStatus(res ? 'Guardado' : 'No se pudo guardar');
+        } catch (err) {
+          console.error('Error guardando:', err);
+          setStatus('Error al guardar');
+        }
+      }
+      async function loadState() {
+        try {
+          const res = await window.storage.get(STORAGE_KEY, false);
+          state = (res && res.value) ? JSON.parse(res.value) : defaultState();
+        } catch (err) {
+          state = defaultState();
+        }
+      }
+      async function resetAll() {
+        if (!confirm('¿Seguro que querés borrar todo el contenido y empezar de nuevo?')) return;
+        try { await window.storage.delete(STORAGE_KEY, false); } catch (e) { }
+        state = defaultState();
+        buildUI();
+        scheduleSave();
+      }
+
+      // ---------- image compression ----------
+      function resizeImage(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const img = new Image();
+            img.onload = function () {
+              const maxW = 1000;
+              const scale = Math.min(1, maxW / img.width);
+              const w = Math.max(1, Math.round(img.width * scale));
+              const h = Math.max(1, Math.round(img.height * scale));
+              const canvas = document.createElement('canvas');
+              canvas.width = w; canvas.height = h;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, w, h);
+              resolve(canvas.toDataURL('image/jpeg', 0.82));
+            };
+            img.onerror = reject;
+            img.src = e.target.result;
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // ---------- mode ----------
+      function applyMode(mode) {
+        document.body.classList.toggle('mode-edit', mode === 'edit');
+        document.body.classList.toggle('mode-view', mode === 'view');
+      }
+
+      // ---------- render: studies ----------
+      function renderStudies() {
+        const list = document.getElementById('studies-list');
+        list.innerHTML = state.profile.studies.map(function (s) {
+          const hasImg = !!s.image;
+          return '' +
+            '<div class="study-row" data-study-id="' + s.id + '">' +
+            '<div class="study-thumb' + (hasImg ? ' has-img' : '') + '">' +
+            '<span class="placeholder">Certificado</span>' +
+            '<img src="' + esc(s.image) + '" alt="Certificado de ' + esc(s.titulo) + '">' +
+            '<button class="btn study-thumb-upload edit-only" data-action="trigger-upload-study" type="button" title="Subir certificado">✎</button>' +
+            '<input class="file-input" type="file" accept="image/*" data-action="file-input-study">' +
+            '</div>' +
+            '<div class="study-fields">' +
+            '<input class="field" data-field="periodo" type="text" value="' + esc(s.periodo) + '" placeholder="2023 — 2027">' +
+            '<div>' +
+            '<input class="field study-inst" data-field="inst" type="text" value="' + esc(s.inst) + '" placeholder="Institución">' +
+            '<input class="field study-titulo" data-field="titulo" type="text" value="' + esc(s.titulo) + '" placeholder="Título o carrera">' +
+            '</div>' +
+            '</div>' +
+            '<button class="btn ghost edit-only" data-action="delete-study" type="button">Quitar</button>' +
+            '</div>';
+        }).join('');
+      }
+
+      document.getElementById('studies-list').addEventListener('input', function (e) {
+        const row = e.target.closest('[data-study-id]');
+        if (!row) return;
+        const study = state.profile.studies.find(function (s) { return s.id === row.dataset.studyId; });
+        if (study && e.target.dataset.field) {
+          study[e.target.dataset.field] = e.target.value;
+          scheduleSave();
+        }
+      });
+      document.getElementById('studies-list').addEventListener('click', function (e) {
+        const delBtn = e.target.closest('[data-action="delete-study"]');
+        if (delBtn) {
+          const row = delBtn.closest('[data-study-id]');
+          state.profile.studies = state.profile.studies.filter(function (s) { return s.id !== row.dataset.studyId; });
+          renderStudies();
+          scheduleSave();
+          return;
+        }
+        const uploadBtn = e.target.closest('[data-action="trigger-upload-study"]');
+        if (uploadBtn) {
+          uploadBtn.closest('[data-study-id]').querySelector('[data-action="file-input-study"]').click();
+          return;
+        }
+        const thumb = e.target.closest('.study-thumb');
+        if (thumb && thumb.classList.contains('has-img') && document.body.classList.contains('mode-view')) {
+          const row = thumb.closest('[data-study-id]');
+          const study = state.profile.studies.find(function (s) { return s.id === row.dataset.studyId; });
+          if (study && study.image) window.open(study.image, '_blank');
+        }
+      });
+      document.getElementById('studies-list').addEventListener('change', async function (e) {
+        if (e.target.dataset.action !== 'file-input-study') return;
+        const row = e.target.closest('[data-study-id]');
+        const study = state.profile.studies.find(function (s) { return s.id === row.dataset.studyId; });
+        const file = e.target.files[0];
+        if (!file || !study) return;
+        try {
+          const dataUrl = await resizeImage(file);
+          study.image = dataUrl;
+          const thumb = row.querySelector('.study-thumb');
+          thumb.classList.add('has-img');
+          thumb.querySelector('img').src = dataUrl;
+          scheduleSave();
+        } catch (err) {
+          console.error(err);
+          alert('No se pudo procesar esa imagen. Probá con otro archivo.');
+        }
+      });
+      document.getElementById('add-study-btn').addEventListener('click', function () {
+        state.profile.studies.push({ id: genId(), periodo: '', inst: '', titulo: '', image: '' });
+        renderStudies();
+        scheduleSave();
+      });
+
+      // ---------- render: projects ----------
+      function renderProjects() {
+        const grid = document.getElementById('projects-grid');
+        const cards = state.projects.map(function (p, i) {
+          const num = String(i + 1).padStart(2, '0');
+          const hasImg = !!p.image;
+          const hasLink = !!(p.link && p.link.trim());
+          return '' +
+            '<div class="project-card" data-project-id="' + p.id + '">' +
+            '<span class="project-index">N.º ' + num + '</span>' +
+            '<button class="btn ghost project-delete edit-only" data-action="delete-project" type="button" title="Eliminar proyecto">×</button>' +
+            '<div class="project-image-box' + (hasImg ? ' has-img' : '') + '">' +
+            '<span class="placeholder">Sin imagen</span>' +
+            '<img src="' + esc(p.image) + '" alt="' + esc(p.title) + '">' +
+            '<button class="btn ghost project-upload-btn edit-only" data-action="trigger-upload" type="button">Subir imagen</button>' +
+            '<input class="file-input" type="file" accept="image/*" data-action="file-input">' +
+            '</div>' +
+            '<div class="project-body">' +
+            '<input class="field project-title" data-field="title" type="text" value="' + esc(p.title) + '" placeholder="Nombre del proyecto">' +
+            '<textarea class="field project-desc" data-field="desc" rows="3" placeholder="De qué se trata este proyecto">' + esc(p.desc) + '</textarea>' +
+            '<div class="project-link-row edit-only">' +
+            '<input class="field project-link-input" data-field="link" type="text" value="' + esc(p.link) + '" placeholder="https://enlace-al-proyecto.com">' +
+            '</div>' +
+            (hasLink ? '<a class="project-link-view view-only" href="' + esc(p.link) + '" target="_blank" rel="noopener noreferrer">Ver proyecto</a>' : '') +
+            '</div>' +
+            '</div>';
+        }).join('');
+
+        grid.innerHTML = cards + '<div class="add-project-card edit-only" id="add-project-card">+ Agregar proyecto</div>';
+
+        const addCard = document.getElementById('add-project-card');
+        if (addCard) {
+          addCard.addEventListener('click', function () {
+            state.projects.push({ id: genId(), title: '', desc: '', link: '', image: '' });
+            renderProjects();
+            scheduleSave();
+          });
+        }
+      }
+
+      document.getElementById('projects-grid').addEventListener('input', function (e) {
+        const card = e.target.closest('[data-project-id]');
+        if (!card || !e.target.dataset.field) return;
+        const proj = state.projects.find(function (p) { return p.id === card.dataset.projectId; });
+        if (proj) {
+          proj[e.target.dataset.field] = e.target.value;
+          scheduleSave();
+        }
+      });
+
+      document.getElementById('projects-grid').addEventListener('click', function (e) {
+        const delBtn = e.target.closest('[data-action="delete-project"]');
+        if (delBtn) {
+          const card = delBtn.closest('[data-project-id]');
+          state.projects = state.projects.filter(function (p) { return p.id !== card.dataset.projectId; });
+          renderProjects();
+          scheduleSave();
+          return;
+        }
+        const uploadBtn = e.target.closest('[data-action="trigger-upload"]');
+        if (uploadBtn) {
+          const card = uploadBtn.closest('[data-project-id]');
+          card.querySelector('[data-action="file-input"]').click();
+        }
+      });
+
+      document.getElementById('projects-grid').addEventListener('change', async function (e) {
+        if (e.target.dataset.action !== 'file-input') return;
+        const card = e.target.closest('[data-project-id]');
+        const proj = state.projects.find(function (p) { return p.id === card.dataset.projectId; });
+        const file = e.target.files[0];
+        if (!file || !proj) return;
+        try {
+          const dataUrl = await resizeImage(file);
+          proj.image = dataUrl;
+          const box = card.querySelector('.project-image-box');
+          box.classList.add('has-img');
+          box.querySelector('img').src = dataUrl;
+          scheduleSave();
+        } catch (err) {
+          console.error(err);
+          alert('No se pudo procesar esa imagen. Probá con otro archivo.');
+        }
+      });
+
+      // ---------- profile fields ----------
+      function bindProfileField(id, field, isTagline) {
+        const el = document.getElementById(id);
+        el.addEventListener('input', function () {
+          state.profile[field] = el.value;
+          if (field === 'name') { updateLogoInitial(); }
+          scheduleSave();
+        });
+      }
+
+      document.getElementById('photo-upload-btn').addEventListener('click', function () {
+        document.getElementById('photo-file-input').click();
+      });
+      document.getElementById('photo-file-input').addEventListener('change', async function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        try {
+          const dataUrl = await resizeImage(file);
+          state.profile.photo = dataUrl;
+          const box = document.getElementById('photo-box');
+          box.classList.add('has-img');
+          document.getElementById('profile-photo-img').src = dataUrl;
+          scheduleSave();
+        } catch (err) {
+          console.error(err);
+          alert('No se pudo procesar esa imagen. Probá con otro archivo.');
+        }
+      });
+
+      // ---------- mode + reset ----------
+      const loginOverlay = document.getElementById('login-overlay');
+      const loginForm = document.getElementById('login-form');
+      const loginUser = document.getElementById('login-user');
+      const loginPass = document.getElementById('login-pass');
+      const loginError = document.getElementById('login-error');
+
+      function openLogin() {
+        loginError.textContent = '';
+        loginForm.reset();
+        loginOverlay.classList.add('open');
+        loginUser.focus();
+      }
+      function closeLogin() {
+        loginOverlay.classList.remove('open');
+        loginForm.reset();
+        loginError.textContent = '';
+      }
+
+      document.getElementById('logo-mark').addEventListener('click', function () {
+        if (isAuthenticated) {
+          applyMode('edit');
+        } else {
+          openLogin();
+        }
+      });
+
+      document.getElementById('preview-btn').addEventListener('click', function () {
+        applyMode('view');
+      });
+
+      loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (loginUser.value === CREDENTIALS.user && loginPass.value === CREDENTIALS.pass) {
+          isAuthenticated = true;
+          closeLogin();
+          applyMode('edit');
+        } else {
+          loginError.textContent = 'Usuario o contraseña incorrectos.';
+          loginPass.value = '';
+          loginPass.focus();
+        }
+      });
+
+      document.getElementById('login-cancel').addEventListener('click', closeLogin);
+      loginOverlay.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeLogin();
+      });
+      loginOverlay.addEventListener('click', function (e) {
+        if (e.target === loginOverlay) closeLogin();
+      });
+
+      document.getElementById('logout-btn').addEventListener('click', function () {
+        isAuthenticated = false;
+        applyMode('view');
+      });
+
+      document.getElementById('reset-btn').addEventListener('click', resetAll);
+
+      function updateLogoInitial() {
+        const name = (state.profile.name || '').trim();
+        document.getElementById('logo-initial').textContent = name ? name[0].toUpperCase() : 'P';
+      }
+
+      // ---------- build ----------
+      function buildUI() {
+        document.getElementById('profile-name').value = state.profile.name;
+        document.getElementById('profile-tagline').value = state.profile.tagline;
+        document.getElementById('profile-email').value = state.profile.email;
+        document.getElementById('profile-site').value = state.profile.site;
+        document.getElementById('profile-bio').value = state.profile.bio;
+        updateLogoInitial();
+
+        const photoBox = document.getElementById('photo-box');
+        if (state.profile.photo) {
+          photoBox.classList.add('has-img');
+          document.getElementById('profile-photo-img').src = state.profile.photo;
+        }
+
+        renderStudies();
+        renderProjects();
+        applyMode('view');
+        setStatus('');
+      }
+
+      ['profile-name', 'profile-tagline', 'profile-email', 'profile-site', 'profile-bio'].forEach(function (id) {
+        const field = id.replace('profile-', '');
+        bindProfileField(id, field);
+      });
+
+      // ---------- scroll reveal ----------
+      function setupReveal() {
+        let reduce = false;
+        try {
+          reduce = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        } catch (e) { reduce = false; }
+        const els = document.querySelectorAll('.reveal');
+        if (reduce || !('IntersectionObserver' in window)) {
+          els.forEach(function (el) { el.classList.add('in-view'); });
+          return;
+        }
+        const obs = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in-view');
+              obs.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12 });
+        els.forEach(function (el) { obs.observe(el); });
+      }
+      try {
+        setupReveal();
+      } catch (err) {
+        console.error('No se pudo iniciar la animación de scroll:', err);
+        document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in-view'); });
+      }
+
+      loadState().then(buildUI);
+    })();
+  </script>
+</body>
+
+</html>
