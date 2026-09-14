@@ -96,6 +96,12 @@
       <h2 class="section-title">Proyectos</h2>
       <div class="projects-grid" id="projects-grid"></div>
     </section>
+  <div class="lightbox-modal" id="lightbox-modal">
+    <div class="lightbox-content">
+      <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Cerrar">&times;</button>
+      <img id="lightbox-img" src="" alt="Vista ampliada">
+      <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
   </div>
 
   <footer>Portafolio personal</footer>
@@ -239,10 +245,56 @@
         });
       }
 
+      // ---------- auto-resize textareas ----------
+      function autoResize(el) {
+        if (!el || el.tagName !== 'TEXTAREA') return;
+        el.style.height = 'auto';
+        el.style.height = Math.max(el.scrollHeight, el.id === 'profile-bio' ? 140 : 60) + 'px';
+      }
+
+      function updateAllTextareas() {
+        setTimeout(function () {
+          document.querySelectorAll('textarea.field').forEach(autoResize);
+        }, 10);
+      }
+
+      document.addEventListener('input', function (e) {
+        if (e.target && e.target.tagName === 'TEXTAREA') {
+          autoResize(e.target);
+        }
+      });
+      window.addEventListener('resize', updateAllTextareas);
+
+      // ---------- lightbox modal ----------
+      const lightboxModal = document.getElementById('lightbox-modal');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const lightboxCaption = document.getElementById('lightbox-caption');
+
+      function openLightbox(src, captionText) {
+        if (!src) return;
+        lightboxImg.src = src;
+        lightboxCaption.textContent = captionText || '';
+        lightboxModal.classList.add('open');
+      }
+
+      function closeLightbox() {
+        lightboxModal.classList.remove('open');
+        lightboxImg.src = '';
+      }
+
+      document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+      lightboxModal.addEventListener('click', function (e) {
+        if (e.target === lightboxModal) closeLightbox();
+      });
+      window.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && lightboxModal.classList.contains('open')) closeLightbox();
+      });
+
       // ---------- mode ----------
       function applyMode(mode) {
         document.body.classList.toggle('mode-edit', mode === 'edit');
         document.body.classList.toggle('mode-view', mode === 'view');
+        updateAllTextareas();
       }
 
       // ---------- render: studies ----------
@@ -297,7 +349,10 @@
         if (thumb && thumb.classList.contains('has-img') && document.body.classList.contains('mode-view')) {
           const row = thumb.closest('[data-study-id]');
           const study = state.profile.studies.find(function (s) { return s.id === row.dataset.studyId; });
-          if (study && study.image) window.open(study.image, '_blank');
+          if (study && study.image) {
+            const title = (study.titulo || 'Certificado') + (study.inst ? ' — ' + study.inst : '');
+            openLightbox(study.image, title);
+          }
         }
       });
       document.getElementById('studies-list').addEventListener('change', async function (e) {
@@ -387,6 +442,20 @@
         if (uploadBtn) {
           const card = uploadBtn.closest('[data-project-id]');
           card.querySelector('[data-action="file-input"]').click();
+          return;
+        }
+        const imgBox = e.target.closest('.project-image-box');
+        if (imgBox && imgBox.classList.contains('has-img') && document.body.classList.contains('mode-view')) {
+          const card = imgBox.closest('[data-project-id]');
+          const proj = state.projects.find(function (p) { return p.id === card.dataset.projectId; });
+          if (proj && proj.image) openLightbox(proj.image, proj.title || 'Proyecto');
+        }
+      });
+
+      document.getElementById('photo-box').addEventListener('click', function (e) {
+        if (e.target.closest('#photo-upload-btn')) return;
+        if (document.body.classList.contains('mode-view') && state.profile.photo) {
+          openLightbox(state.profile.photo, state.profile.name || 'Foto de perfil');
         }
       });
 
@@ -527,6 +596,7 @@
         renderProjects();
         applyMode('view');
         setStatus('');
+        updateAllTextareas();
       }
 
       ['profile-name', 'profile-tagline', 'profile-email', 'profile-site', 'profile-bio'].forEach(function (id) {
